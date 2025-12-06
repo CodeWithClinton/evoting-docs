@@ -480,4 +480,142 @@ Groups today’s activities into categories.
 }
 ```
 
+
 ---
+
+# 📌 15. Get Election Winners (Per Position, Handles Ties)
+
+### **GET** `/evoting/get_election_winners/<election_id>/`
+
+Returns the winner(s) for each position in a specific election.
+Handles ties automatically.
+
+### **Success Response**
+
+```json
+{
+  "election_id": 1,
+  "election_title": "2025 SUG Election",
+  "winners": [
+    {
+      "position": "President",
+      "winners": [
+        {
+          "id": 44,
+          "name": "John Doe",
+          "regnumber": "2021/12345",
+          "dept": "Computer Science",
+          "image": "https://school.com/media/students/john.jpg",
+          "votes": 230
+        }
+      ]
+    },
+    {
+      "position": "Vice President",
+      "winners": [],
+      "message": "No candidates available"
+    }
+  ]
+}
+```
+
+### **Errors**
+
+```json
+{"detail": "Election not found"}
+```
+
+---
+
+# 📌 16. Get All Presidential Candidates (With Votes)
+
+### **GET** `/evoting/get_presidential_candidates/<election_id>/`
+
+Returns all candidates contesting for **President**.
+
+### **Success Response**
+
+```json
+{
+  "election_id": 1,
+  "position": "President",
+  "candidates": [
+    {
+      "candidate_id": 44,
+      "name": "John Doe",
+      "votes": 230,
+      "status": "approved"
+    },
+    {
+      "candidate_id": 51,
+      "name": "Mary Smith",
+      "votes": 198,
+      "status": "approved"
+    }
+  ]
+}
+```
+
+### **Errors**
+
+```json
+{"detail": "Election not found"}
+```
+
+```json
+{"detail": "No President position found for this election"}
+```
+
+---
+
+# 📌 17. Faculty Vote Statistics (Votes + Percentages)
+
+### **GET** `/evoting/faculty_vote_statistics/<election_id>/`
+
+Returns how many votes came from each faculty and their percentage contribution.
+
+### **Success Response**
+
+```json
+{
+  "total_votes": 5400,
+  "faculties": [
+    {
+      "faculty_id": 1,
+      "faculty_name": "Engineering",
+      "vote_count": 2100,
+      "percentage": 38.89
+    },
+    {
+      "faculty_id": 2,
+      "faculty_name": "Environmental Studies",
+      "vote_count": 1680,
+      "percentage": 31.11
+    }
+  ]
+}
+```
+
+---
+
+# 📌 18. Election Participation Summary
+
+### **GET** `/evoting/election_participation_summary/<election_id>/`
+
+Returns population statistics for the election, such as:
+
+* Total candidates
+* Total voters
+* Total eligible voters
+* Turnout percentage
+
+### **Success Response**
+
+```json
+{
+  "total_candidates": 84,
+  "total_voters": 5400,
+  "total_eligible_voters": 9200,
+  "turnout_percentage": 58.7
+}
+```

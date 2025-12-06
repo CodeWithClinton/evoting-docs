@@ -483,7 +483,7 @@ Groups today’s activities into categories.
 
 ---
 
-# 📌 15. Get Election Winners (Per Position, Handles Ties)
+# 📌 11. Get Election Winners (Per Position, Handles Ties)
 
 ### **GET** `/evoting/get_election_winners/<election_id>/`
 
@@ -527,7 +527,7 @@ Handles ties automatically.
 
 ---
 
-# 📌 16. Get All Presidential Candidates (With Votes)
+# 📌 12. Get All Presidential Candidates (With Votes)
 
 ### **GET** `/evoting/get_presidential_candidates/<election_id>/`
 
@@ -568,7 +568,7 @@ Returns all candidates contesting for **President**.
 
 ---
 
-# 📌 17. Faculty Vote Statistics (Votes + Percentages)
+# 📌 13. Faculty Vote Statistics (Votes + Percentages)
 
 ### **GET** `/evoting/faculty_vote_statistics/<election_id>/`
 
@@ -598,7 +598,7 @@ Returns how many votes came from each faculty and their percentage contribution.
 
 ---
 
-# 📌 18. Election Participation Summary
+# 📌 14. Election Participation Summary
 
 ### **GET** `/evoting/election_participation_summary/<election_id>/`
 
@@ -619,3 +619,93 @@ Returns population statistics for the election, such as:
   "turnout_percentage": 58.7
 }
 ```
+
+
+
+# 🗳️ **15 View Election Results **
+
+### **GET** `/evoting/view_election_results/`
+
+Returns the full election result breakdown, **position by position**, including:
+
+* Candidate info
+* Total votes per candidate
+* A boolean indicating whether the candidate is the **winner**
+
+### **Auth Required:** ✅ Yes
+
+---
+
+## **🔍 Query Parameters**
+
+| Param         | Required   | Description                                                                  |
+| ------------- | ---------- | ---------------------------------------------------------------------------- |
+| `election_id` | ❌ optional | ID of a specific election. If not provided, the latest SUG election is used. |
+
+---
+
+## **✔️ Sample Response (Updated)**
+
+```json
+{
+  "election": "SUG Election 2024/2025",
+  "positions": [
+    {
+      "id": 1,
+      "name": "President",
+      "candidates": [
+        {
+          "id": 14,
+          "student": {
+            "id": 2034,
+            "registration_number": "201812345",
+            "full_name": "John Doe",
+            "level": "300",
+            "faculty": "Social Sciences",
+            "department": "Political Science",
+            "image": "https://nau-slc.s3.eu-west-2.amazonaws.com/media/student_images/201812345.png"
+          },
+          "vote_count": 1200,
+          "winner": true
+        },
+        {
+          "id": 15,
+          "student": {
+            "id": 2110,
+            "registration_number": "201845612",
+            "full_name": "Mary Okafor",
+            "level": "300",
+            "faculty": "Law",
+            "department": "Public Law",
+            "image": "https://nau-slc.s3.eu-west-2.amazonaws.com/media/student_images/201845612.png"
+          },
+          "vote_count": 850,
+          "winner": false
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Vice President",
+      "candidates": [
+        {
+          "id": 32,
+          "student": {
+            "id": 3001,
+            "registration_number": "201733400",
+            "full_name": "Kelvin James",
+            "level": "400",
+            "faculty": "Education",
+            "department": "Educational Management",
+            "image": "https://nau-slc.s3.eu-west-2.amazonaws.com/media/student_images/201733400.png"
+          },
+          "vote_count": 950,
+          "winner": true
+        }
+      ]
+    }
+  ]
+}
+```
+
+---

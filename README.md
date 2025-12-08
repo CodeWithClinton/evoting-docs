@@ -709,3 +709,110 @@ Returns the full election result breakdown, **position by position**, including:
 ```
 
 ---
+
+
+
+Here is the **clean, complete, GitHub-ready documentation** for the two new endpoints, fully matching the style of the previous endpoints.
+
+---
+
+# 📌 19. Get Candidates for a Specific Position
+
+### **GET** `/evoting/get_positional_candidates/<election_id>/<position_id>/`
+
+Returns **all candidates** running for a specific position within an election.
+
+Useful for displaying ballot options per position.
+
+---
+
+### **Parameters**
+
+| Name          | Type | Description                                 |
+| ------------- | ---- | ------------------------------------------- |
+| `election_id` | int  | ID of the election                          |
+| `position_id` | int  | ID of the position (EligiblePosition model) |
+
+---
+
+### **Success Response**
+
+```json
+{
+  "election_id": 1,
+  "position": "Vice President",
+  "candidates": [
+    {
+      "candidate_id": 10,
+      "name": "John Doe",
+      "votes": 120,
+      "status": "approved"
+    },
+    {
+      "candidate_id": 18,
+      "name": "Sarah Bright",
+      "votes": 114,
+      "status": "approved"
+    }
+  ]
+}
+```
+
+---
+
+### **Errors**
+
+#### Election not found
+
+```json
+{
+  "detail": "Election not found"
+}
+```
+
+#### Position not part of the election
+
+```json
+{
+  "detail": "No position found for this election"
+}
+```
+
+---
+
+# 📌 17. Stop an Election Immediately
+
+### **POST** `/evoting/stop_election/<election_id>/`
+
+Force-stops an election instantly.
+When stopped:
+
+* `published` becomes `False`, so students cannot vote again.
+* `end_date` and `end_time` are set to the current timestamp.
+
+This endpoint is for **admins** or election controllers.
+
+---
+
+### **Success Response**
+
+```json
+{
+  "message": "Election has been stopped successfully.",
+  "election_id": 1,
+  "stopped_at": "2025-12-07T14:22:58.402910Z"
+}
+```
+
+---
+
+### **Error Response**
+
+```json
+{
+  "detail": "Not found."
+}
+```
+
+---
+

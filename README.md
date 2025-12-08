@@ -816,3 +816,21 @@ This endpoint is for **admins** or election controllers.
 
 ---
 
+
+# 18 **Get Positions in an Election**
+
+### **GET** `/evoting/get_election_positions/{election_id}/`
+
+Returns all contestable positions for an election.
+
+### **Auth Required:** ✅ Yes
+
+### ✔️ **Sample Response**
+
+```json
+[
+  { "id": 1, "name": "President" },
+  { "id": 2, "name": "Vice President" },
+  { "id": 3, "name": "Secretary General" }
+]
+```

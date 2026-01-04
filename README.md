@@ -1054,23 +1054,7 @@ Returns appeals submitted by the **currently logged-in student**.
 
 ---
 
-## 📦 Appeal Object Structure
 
-```ts
-CandidateAppeal {
-  id: number
-  appeal_type: string
-  appeal_title: string
-  appeal_summary: string
-  document: string | null
-  status: "pending" | "resolved"
-  resolve_reason: string | null
-  created_at: string
-  candidate: Candidate
-  position: ElectionPosition
-  election: Election
-}
-```
 
 ---
 

@@ -834,3 +834,247 @@ Returns all contestable positions for an election.
   { "id": 3, "name": "Secretary General" }
 ]
 ```
+
+
+
+
+
+---
+
+# 📌 Candidate Appeal API Documentation
+
+This module allows **election candidates** to submit appeals after rejection and allows **admins** to review and resolve those appeals.
+
+All endpoints require **authentication**.
+
+**Base URL (example):**
+
+```
+/BASE_URL/evoting/
+```
+
+---
+
+## 🔐 Authentication
+
+All endpoints require:
+
+```
+Authorization: Bearer <access_token>
+```
+
+---
+
+## 📤 Submit Candidate Appeal
+
+### **POST** `/submit_candidate_appeal/`
+
+Submit an appeal for a rejected candidate.
+
+### ✅ Rules
+
+* Only **rejected candidates** can submit appeals
+* Appeal summary must be **≤ 500 characters**
+* Document upload is optional
+
+---
+
+### Request Body (multipart/form-data)
+
+| Field            | Type    | Required | Description            |
+| ---------------- | ------- | -------- | ---------------------- |
+| `candidate`      | integer | ✅        | Candidate ID           |
+| `appeal_type`    | string  | ❌        | Defaults to `"normal"` |
+| `appeal_title`   | string  | ✅        | Short title of appeal  |
+| `appeal_summary` | string  | ✅        | Max 500 characters     |
+| `document`       | file    | ❌        | Supporting document    |
+
+#### Example
+
+```json
+{
+  "candidate": 12,
+  "appeal_type": "normal",
+  "appeal_title": "Wrong Disqualification",
+  "appeal_summary": "I was wrongly disqualified due to document mismatch."
+}
+```
+
+---
+
+### Success Response `201 Created`
+
+```json
+{
+  "id": 5,
+  "appeal_type": "normal",
+  "candidate": {...},
+  "position": {...},
+  "election": {...},
+  "appeal_title": "Wrong Disqualification",
+  "appeal_summary": "I was wrongly disqualified due to document mismatch.",
+  "document": "/media/appeals/file.pdf",
+  "status": "pending",
+  "resolve_reason": null,
+  "created_at": "2026-01-03T10:15:00Z"
+}
+```
+
+---
+
+### Error Responses
+
+| Status | Reason                         |
+| ------ | ------------------------------ |
+| `400`  | Missing required fields        |
+| `400`  | Summary exceeds 500 characters |
+| `400`  | Candidate is not rejected      |
+| `404`  | Candidate not found            |
+
+---
+
+## ✅ Resolve Appeal (Admin Action)
+
+### **POST** `/resolve_appeal/<appeal_id>/`
+
+Resolve an appeal and optionally approve the candidate.
+
+---
+
+### Request Body (JSON)
+
+| Field               | Type    | Required | Description                  |
+| ------------------- | ------- | -------- | ---------------------------- |
+| `resolve_reason`    | string  | ✅        | Reason for decision          |
+| `approve_candidate` | boolean | ❌        | Approves candidate if `true` |
+
+#### Example
+
+```json
+{
+  "resolve_reason": "Documents verified and valid",
+  "approve_candidate": true
+}
+```
+
+---
+
+### Success Response `200 OK`
+
+```json
+{
+  "message": "Appeal resolved successfully"
+}
+```
+
+---
+
+### Notes
+
+* Appeal status becomes **resolved**
+* If `approve_candidate = true`:
+
+  * Candidate status → `approved`
+  * Candidate marked as checked
+
+---
+
+## 📋 List All Candidate Appeals (Admin)
+
+### **GET** `/list_candidate_appeals/`
+
+Fetch all appeals with optional filters.
+
+---
+
+### Query Parameters (Optional)
+
+| Param          | Description           |
+| -------------- | --------------------- |
+| `status`       | `pending`, `resolved` |
+| `election_id`  | Filter by election    |
+| `candidate_id` | Filter by candidate   |
+
+#### Example
+
+```
+/list_candidate_appeals/?status=pending&election_id=3
+```
+
+---
+
+### Success Response `200 OK`
+
+```json
+[
+  {
+    "id": 5,
+    "appeal_type": "normal",
+    "candidate": {...},
+    "position": {...},
+    "election": {...},
+    "appeal_title": "Wrong Disqualification",
+    "appeal_summary": "I was wrongly disqualified...",
+    "document": "/media/appeals/file.pdf",
+    "status": "pending",
+    "resolve_reason": null,
+    "created_at": "2026-01-03T10:15:00Z"
+  }
+]
+```
+
+---
+
+## 👤 My Appeals (Candidate)
+
+### **GET** `/my_appeals/`
+
+Returns appeals submitted by the **currently logged-in student**.
+
+---
+
+### Success Response `200 OK`
+
+```json
+[
+  {
+    "id": 5,
+    "appeal_type": "normal",
+    "position": {...},
+    "election": {...},
+    "appeal_title": "Wrong Disqualification",
+    "appeal_summary": "I was wrongly disqualified...",
+    "document": null,
+    "status": "resolved",
+    "resolve_reason": "Documents verified",
+    "created_at": "2026-01-03T10:15:00Z"
+  }
+]
+```
+
+---
+
+## 📦 Appeal Object Structure
+
+```ts
+CandidateAppeal {
+  id: number
+  appeal_type: string
+  appeal_title: string
+  appeal_summary: string
+  document: string | null
+  status: "pending" | "resolved"
+  resolve_reason: string | null
+  created_at: string
+  candidate: Candidate
+  position: ElectionPosition
+  election: Election
+}
+```
+
+---
+
+
+
+
+
